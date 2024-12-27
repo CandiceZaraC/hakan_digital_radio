@@ -1,6 +1,9 @@
 import streamlit as st
 import json
 import requests
+import os
+import uuid
+from chat import show_chat_room_page  # Import the chat room page function
 
 def apply_custom_styles():
     with open("styles.css") as f:
@@ -42,19 +45,21 @@ def apply_custom_styles():
 def main():
     apply_custom_styles()
 
-    st.sidebar.title("Hakan Digital Radio")
-    page = st.sidebar.radio("Navigate to:", ["Welcome", "Radio", "About Us"])
+    st.sidebar.title("Alfarizky Digital Radio")
+    page = st.sidebar.radio("Navigate to:", ["Welcome", "Radio", "Chat room", "About Us"])
 
     if page == "Welcome":
         show_welcome_page()
     elif page == "Radio":
         show_audio_player_page()
+    elif page == "Chat room":
+        show_chat_room_page()
     elif page == "About Us":
         show_about_contact_page()
 
 def show_welcome_page():
     st.image("images/HD-Radio-logo1.jpeg", use_container_width=True)
-    st.title("Welcome to the Hakan Digital Radio!")
+    st.title("Welcome to the Alfarizky Digital Radio!")
     st.write("This app allows you to explore various functionalities including listening to radio streaming.")
 
 def show_audio_player_page():
