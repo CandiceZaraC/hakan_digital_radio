@@ -1,0 +1,22 @@
+body {
+    background-color: black;
+    color: white;
+}
+.css-1d391kg {
+    background-color: black;
+    color: white;
+}
+.stSidebar {
+    background-color: rgb(0, 0, 0);
+    color: rgb(3, 250, 238);
+}
+.stButton button {
+    background-color: white;
+    color: black;
+}
+.stTextInput > label {
+    color: white;
+}
+.css-1vbd788 > div > div > label {
+    color: rgb(3, 250, 238);
+}
