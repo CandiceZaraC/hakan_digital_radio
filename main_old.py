@@ -63,31 +63,33 @@ def show_audio_player_page():
 
     stations = load_stations()
 
-    selected_station = st.selectbox("Choose a station", list(stations.keys()))
-    
-    try:
-        response = requests.get(stations[selected_station], stream=True)
-        if response.status_code == 200:
-            st.audio(stations[selected_station], format="audio/mp3")
-        else:
-            st.error("Unable to stream the selected station. Please try another one.")
-    except requests.exceptions.RequestException as e:
-        st.error(f"Error streaming the station: {e}")
+    col1, col2 = st.columns([3, 1])
 
-    st.write("### Add a new station")
-    st.write("Station name")
-    new_station_name = st.text_input("Station name")
-    st.write("Station URL")
-    new_station_url = st.text_input("Station URL")
+    with col1:
+        selected_station = st.selectbox("Choose a station", list(stations.keys()))
+        
+        try:
+            response = requests.get(stations[selected_station], stream=True)
+            if response.status_code == 200:
+                st.audio(stations[selected_station], format="audio/mp3")
+            else:
+                st.error("Unable to stream the selected station. Please try another one.")
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error streaming the station: {e}")
 
-    if st.button("Add station"):
-        if new_station_name and new_station_url:
-            stations[new_station_name] = new_station_url
-            save_stations(stations)
-            st.success(f"Station '{new_station_name}' added successfully!")
-        else:
-            st.error("Please provide both a station name and URL.")
+    with col2:
+        st.markdown("<h1>Add a New Station</h1>", unsafe_allow_html=True)
+        new_station_name = st.text_input("Station name")
+        new_station_url = st.text_input("Station URL")
 
+        if st.button("Add station"):
+            if new_station_name and new_station_url:
+                stations[new_station_name] = new_station_url
+                save_stations(stations)
+                st.success(f"Station '{new_station_name}' added successfully!")
+            else:
+                st.error("Please provide both a station name and URL.")
+                
 def show_about_contact_page():
     st.markdown("<h1 id='about-us'>About Us</h1>", unsafe_allow_html=True)
     st.write("Feel free to reach out to us with any questions or feedback.")
