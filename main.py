@@ -1,4 +1,6 @@
 import streamlit as st
+import json
+import requests
 
 def apply_custom_styles():
     with open("styles.css") as f:
@@ -59,16 +61,32 @@ def show_audio_player_page():
     st.markdown("<h1 id='radio'>Radio</h1>", unsafe_allow_html=True)
     st.write("Select a radio station below to start streaming:")
 
-    stations = {
-        "BBC World Service": "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service",
-        "NPR News": "https://npr-ice.streamguys1.com/live.mp3",
-        "Classic FM": "http://media-ice.musicradio.com/ClassicFMMP3",
-        "Jazz24": "http://live.wostreaming.net/direct/ppm-jazz24mp3-ibc1",
-        "Radio Swiss Jazz": "http://stream.srg-ssr.ch/m/rsj/mp3_128"
-    }
+    stations = load_stations()
 
     selected_station = st.selectbox("Choose a station", list(stations.keys()))
-    st.audio(stations[selected_station], format="audio/mp3")
+    
+    try:
+        response = requests.get(stations[selected_station], stream=True)
+        if response.status_code == 200:
+            st.audio(stations[selected_station], format="audio/mp3")
+        else:
+            st.error("Unable to stream the selected station. Please try another one.")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error streaming the station: {e}")
+
+    st.write("### Add a new station")
+    st.write("Station name")
+    new_station_name = st.text_input("Station name")
+    st.write("Station URL")
+    new_station_url = st.text_input("Station URL")
+
+    if st.button("Add station"):
+        if new_station_name and new_station_url:
+            stations[new_station_name] = new_station_url
+            save_stations(stations)
+            st.success(f"Station '{new_station_name}' added successfully!")
+        else:
+            st.error("Please provide both a station name and URL.")
 
 def show_about_contact_page():
     st.markdown("<h1 id='about-us'>About Us</h1>", unsafe_allow_html=True)
@@ -77,6 +95,21 @@ def show_about_contact_page():
     st.write("- Email: www.linkedin.com/in/krishnacheedella")
     st.write("- Phone: +123 456 7890")
     st.write("- Address: 123 Zayd Street, Frontier City")
+
+def load_stations():
+    try:
+        with open("stations.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {
+            "BBC World Service": "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service",
+            "NPR News": "https://npr-ice.streamguys1.com/live.mp3",
+            "Radio Swiss Jazz": "http://stream.srg-ssr.ch/m/rsj/mp3_128"
+        }
+
+def save_stations(stations):
+    with open("stations.json", "w") as f:
+        json.dump(stations, f)
 
 if __name__ == "__main__":
     main()
