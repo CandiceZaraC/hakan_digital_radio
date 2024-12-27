@@ -51,7 +51,7 @@ def main():
         show_about_contact_page()
 
 def show_welcome_page():
-    st.image(r"C:\Users\home\Documents\CANDICE\radio\images\HD-Radio-logo1.jpeg", use_container_width=True)
+    st.image("images/HD-Radio-logo1.jpeg", use_container_width=True)
     st.title("Welcome to the Hakan Digital Radio!")
     st.write("This app allows you to explore various functionalities including listening to radio streaming.")
 
